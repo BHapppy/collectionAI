@@ -1,0 +1,12 @@
+@import "../../SCSS/_variables";
+
+.sidebar {
+    width: 100px;
+    min-height: 100vh;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    background-color: $moduleColor;
+}
