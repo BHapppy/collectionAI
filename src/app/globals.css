@@ -77,9 +77,13 @@
 .main {
   --bg-color: #1E2531;
 
-  padding-left: 100px;
-  min-height: 100vh;
+  padding: 50px;
+  padding-left: 150px;
   color: white;
 
   background-color: var(--bg-color);
+}
+
+.main,body,html {
+  height: 100%;
 }

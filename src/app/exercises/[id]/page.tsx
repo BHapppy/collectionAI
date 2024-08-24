@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 type Props = {
 
@@ -7,7 +7,7 @@ type Props = {
 
 const Exercise: React.FC<Props> = ({}) => {
     return ( 
-        <div className={styles.test} >
+        <div className={styles.wrapper} >
             
         </div>
     );
