@@ -3,8 +3,9 @@ import cl from '@/app/modules/authMenu/authMenu.module.scss'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { useForm } from 'react-hook-form'
+import axios from 'axios'
 
-type authForm = {
+type registerForm = {
 	email: string
 	password: string
 	username: string
@@ -12,8 +13,12 @@ type authForm = {
 }
 
 type serverAnswer = {
-	isSucces: boolean,
-    text: string
+	data: {
+		isSucces: boolean
+		text: string
+	}
+	status: number
+	statusText: string
 }
 
 type props = {
@@ -22,17 +27,21 @@ type props = {
 }
 
 const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
-	const { register, handleSubmit, formState,watch } = useForm<authForm>({
-		mode: 'onSubmit',
+	const { register, handleSubmit, formState, watch,trigger} = useForm<registerForm>({
+		mode: 'onChange',
+		
 	})
-	function onSubmit(data: authForm) {
-		fetch('/api/register',{
-			method:'POST',
-			body:JSON.stringify(data)
-		}).then(meta=>meta.json()).then(((answer:serverAnswer)=>{
-			
-		}))
+
+	
+
+	async function onSubmit(postOnServer: registerForm) {
+		const answer = axios.post<registerForm, serverAnswer>(
+			'/api/register',
+			JSON.stringify(postOnServer)
+		)
 	}
+	const passwordWatch = watch('password')
+	
 
 	const emailError = formState.errors['email']?.message
 	const usernameError = formState.errors['username']?.message
@@ -65,9 +74,11 @@ const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
 					<div className={cl.relative_container}>
 						<Input
 							placeholder='Username'
+							
 							className={`${cl.input} ${usernameError ? cl.invalid_value : ''}`}
 							{...register('username', {
 								required: 'Username field required',
+								
 							})}
 						/>
 					</div>
@@ -77,11 +88,6 @@ const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
 							className={`${cl.input} ${passwordError ? cl.invalid_value : ''}`}
 							{...register('password', {
 								required: 'Passowrd field required',
-								validate: (arg: string) => {
-									if (watch('passwordConfirm') != arg) {
-										return 'Your passwords do no match'
-									}
-								},
 							})}
 						/>
 					</div>
@@ -94,10 +100,11 @@ const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
 							{...register('passwordConfirm', {
 								required: 'Passowrd must be confirm',
 								validate: (arg: string) => {
-									if (watch('password') != arg) {
+									if (passwordWatch != arg) {
 										return 'Your passwords do no match'
 									}
 								},
+								
 							})}
 						/>
 					</div>

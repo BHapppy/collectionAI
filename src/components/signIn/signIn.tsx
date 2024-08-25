@@ -4,6 +4,7 @@ import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
 
 type authForm = {
 	email: string
@@ -11,33 +12,38 @@ type authForm = {
 }
 
 type serverAnswer = {
-	isSucces: boolean,
-    text: string
+	data: {
+		isSucces: boolean
+		text: string
+	}
+	status: number
+	statusText: string
 }
 
 type props = {
 	setErrorDescription: (arg: any) => void
-	toggle:()=>void
+	toggle: () => void
 }
 
-const SignIn: FC<props> = ({ setErrorDescription,toggle }) => {
+const SignIn: FC<props> = ({ setErrorDescription, toggle }) => {
 	const { register, handleSubmit, formState } = useForm<authForm>({
 		mode: 'onSubmit',
 	})
 	const router = useRouter()
-	function onSubmit(data: authForm) {
-		fetch('/api/login', {
-			method: 'POST',
-			body: JSON.stringify(data),
-		})
-			.then(meta => meta.json())
-			.then((answer : serverAnswer) => {
-				if (answer.isSucces) {
-					router.replace('/home')
-				} else {
-					setErrorDescription(answer.text)
-				}
-			})
+	async function onSubmit(postOnServer: authForm) {
+		try {
+			const answer = await axios.post<authForm, serverAnswer>(
+				'/api/login',
+				JSON.stringify(postOnServer)
+			)
+			if (answer.data.isSucces) {
+				router.replace('/home')
+			} else {
+				setErrorDescription(answer.data.text)
+			}
+		} catch {
+			setErrorDescription('something went wrong, please reload the page')
+		}
 	}
 
 	const emailError = formState.errors['email']?.message
@@ -49,7 +55,7 @@ const SignIn: FC<props> = ({ setErrorDescription,toggle }) => {
 				return item.message !== ''
 			})?.message
 		)
-	}, [emailError,passwordError])
+	}, [emailError, passwordError])
 	return (
 		<>
 			<div className={cl.auth_menu}>
@@ -80,8 +86,10 @@ const SignIn: FC<props> = ({ setErrorDescription,toggle }) => {
 					<div className={cl.submit_container}>
 						<Button className={cl.submit_button}>Sign In</Button>
 						<p className={cl.footer_text}>
-							<span className={cl.toggle} onClick={toggle}>Sign Up</span> if you don't have
-							account yet
+							<span className={cl.toggle} onClick={toggle}>
+								Sign Up
+							</span>{' '}
+							if you don't have account yet
 						</p>
 					</div>
 				</form>
