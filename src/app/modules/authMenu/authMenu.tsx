@@ -1,38 +1,27 @@
 'use client'
-import { FC, MouseEvent, useState } from 'react'
-import cl from './authMenu.module.scss'
+import { FC, useState } from 'react'
 import SignIn from '@/components/signIn/signIn'
 import SignUp from '@/components/signUp/signUp'
-import { Button } from '@/components/ui/button'
+import ErrorMessage from '@/components/ui/errorMessage/errorMessage'
+
 const AuthMenu: FC = () => {
-	const [isSignUp, setIsSignUp] = useState(false)
-	const choice = isSignUp ? 'Sign In' : 'Sign Up'
-	function submit(e: MouseEvent<HTMLButtonElement> ) {
-		e.preventDefault()
+	const [errorsDescription, setErrorDescription] = useState('')
+	const [isSignIn, setIsSignIn] = useState(false)
+	function toggle(){
+		setIsSignIn(prev=>!prev)
 	}
 	return (
-		<div className={`${cl.auth_menu} ${isSignUp ? cl.sign_up : cl.sign_in}`}>
-			<form className={cl.form_container}>
-				<h1 className={cl.logotype}>{choice}</h1>
-				{!isSignUp && <SignIn/>}
-				{isSignUp && <SignUp/>}
-				<div className={cl.submit_container}>
-					<Button className={cl.submit_button} onClick={submit}>{choice}</Button>
-					<p className={cl.footer_text}>
-						<span
-							onClick={() => setIsSignUp(prev => !prev)}
-							className={cl.toggle}
-						>
-							{choice}
-						</span>
-
-						{isSignUp
-							? " if you don't have an account yet."
-							: ' if you already have an account'}
-					</p>
-				</div>
-			</form>
-		</div>
+		<>
+			{errorsDescription && (
+				<ErrorMessage
+					errorDescription={errorsDescription}
+					onElement={document.getElementById('auth') as HTMLElement}
+					width='500px'
+				/>
+			)}
+			{!isSignIn && <SignUp setErrorDescription={setErrorDescription} toggle={toggle}/>}
+			{isSignIn && <SignIn setErrorDescription={setErrorDescription} toggle={toggle}/>}
+		</>
 	)
 }
 

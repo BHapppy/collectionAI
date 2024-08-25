@@ -1,92 +1,105 @@
-import { ChangeEvent, FC, useState } from 'react'
+import { FC, useEffect } from 'react'
 import cl from '@/app/modules/authMenu/authMenu.module.scss'
-import { Input } from '@/components/ui/input'
+import { Input } from '../ui/input'
+import { Button } from '../ui/button'
+import { useForm } from 'react-hook-form'
 
+type authForm = {
+	email: string
+	password: string
+	username: string
+	passwordConfirm: string
+}
 
+type props = {
+	setErrorDescription: (arg: any) => void
+	toggle:()=>void
+}
 
-const SignUp: FC = ({}) => {
-	const [emailValue, setEmailValue] = useState('')
-	const [passwordValue, setPasswordValue] = useState('')
-	const [confirmPasswordValue, setConfirmPasswordValue] = useState('')
-	const [usernameValue, setUsernameValue] = useState('')
+const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
+	const { register, handleSubmit, formState,watch } = useForm<authForm>({
+		mode: 'onSubmit',
+	})
+	function onSubmit(data: authForm) {}
 
-	function onInput(e: ChangeEvent<HTMLInputElement>) {
-		switch (e.target.id) {
-			case 'email':
-				setEmailValue(e.target.value)
-				break
-			case 'password':
-				setPasswordValue(e.target.value)
-				break
-			case 'username':
-				setUsernameValue(e.target.value)
-				break
-			case 'confirmPassword':
-				setConfirmPasswordValue(e.target.value)
-				break
-		}
-	}
+	const emailError = formState.errors['email']?.message
+	const usernameError = formState.errors['username']?.message
+	const passwordError = formState.errors['password']?.message
+	const passwordConfirmError = formState.errors['passwordConfirm']?.message
+
+	useEffect(() => {
+		setErrorDescription(Object.values(formState.errors).find((item) =>{
+			return item.message !== ''
+		})?.message)
+	}, [emailError, passwordError,passwordConfirmError,usernameError])
 	return (
 		<>
-			<div className={cl.relative_container}>
-				<Input
-					className={cl.input}
-					id='email'
-					onInput={onInput}
-					value={emailValue}
-				/>
-				<label
-					htmlFor='email'
-					className={`${cl.label} ${emailValue.length ? cl.onFocus : ''}`}
-				>
-					Email
-				</label>
+			<div className={cl.auth_menu}>
+				<form className={cl.form_container} onSubmit={handleSubmit(onSubmit)}>
+					<h1 className={cl.logotype}>Sign Up</h1>
+					<div className={cl.relative_container}>
+						<Input
+							placeholder='Email'
+							className={`${cl.input} ${emailError ? cl.invalid_value : ''}`}
+							{...register('email', {
+								required: 'Email field required',
+								pattern: {
+									value: /[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+/i,
+									message: 'invalid email',
+								},
+							})}
+						/>
+					</div>
+					<div className={cl.relative_container}>
+						<Input
+							placeholder='Username'
+							className={`${cl.input} ${usernameError ? cl.invalid_value : ''}`}
+							{...register('username', {
+								required: 'Username field required',
+							})}
+						/>
+					</div>
+					<div className={cl.relative_container}>
+						<Input
+							placeholder='Password'
+							className={`${cl.input} ${passwordError ? cl.invalid_value : ''}`}
+							{...register('password', {
+								required: 'Passowrd field required',
+								validate: (arg: string) => {
+									if (watch('passwordConfirm') != arg) {
+										return 'Your passwords do no match'
+									}
+								},
+							})}
+						/>
+					</div>
+					<div className={cl.relative_container}>
+						<Input
+							placeholder='Password Confimiration'
+							className={`${cl.input} ${
+								passwordConfirmError ? cl.invalid_value : ''
+							}`}
+							{...register('passwordConfirm', {
+								required: 'Passowrd must be confirm',
+								validate: (arg: string) => {
+									if (watch('password') != arg) {
+										return 'Your passwords do no match'
+									}
+								},
+							})}
+						/>
+					</div>
+					<div className={cl.submit_container}>
+						<Button className={cl.submit_button}>Enlist</Button>
+						<p className={cl.footer_text}>
+							<span className={cl.toggle} onClick={toggle}>
+								Sign In
+							</span>{' '}
+							if you already have an account
+						</p>
+					</div>
+				</form>
 			</div>
-			<div className={cl.relative_container}>
-				<Input
-					className={cl.input}
-					id='username'
-					onInput={onInput}
-					value={usernameValue}
-				/>
-				<label
-				htmlFor='username'
-					className={`${cl.label} ${usernameValue.length ? cl.onFocus : ''}`}
-				>
-					Username
-				</label>
-			</div>
-			<div className={cl.relative_container}>
-				<Input
-					className={cl.input}
-					id='password'
-					onInput={onInput}
-					value={passwordValue}
-				/>
-				<label
-					htmlFor='password'
-					className={`${cl.label} ${passwordValue.length ? cl.onFocus : ''}`}
-				>
-					Password
-				</label>
-			</div>
-			<div className={cl.relative_container}>
-				<Input
-					className={cl.input}
-					id='confirmPassword'
-					onInput={onInput}
-					value={confirmPasswordValue}
-				/>
-				<label
-				htmlFor='confirmPassword'
-					className={`${cl.label} ${
-						confirmPasswordValue.length ? cl.onFocus : ''
-					}`}
-				>
-					Password confirmation
-				</label>
-			</div>
-			
 		</>
 	)
 }

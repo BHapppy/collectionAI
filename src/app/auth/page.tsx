@@ -7,7 +7,7 @@ import AuthMenu from '../modules/authMenu/authMenu';
 const Auth: FC = ({}) => {
    
     return ( 
-        <div className={cl.auth_container} >
+        <div className={cl.auth_container} id='auth'>
             <AuthMenu/>
         </div>
     );
