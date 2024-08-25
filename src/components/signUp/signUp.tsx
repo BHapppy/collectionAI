@@ -11,6 +11,11 @@ type authForm = {
 	passwordConfirm: string
 }
 
+type serverAnswer = {
+	isSucces: boolean,
+    text: string
+}
+
 type props = {
 	setErrorDescription: (arg: any) => void
 	toggle:()=>void
@@ -20,7 +25,14 @@ const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
 	const { register, handleSubmit, formState,watch } = useForm<authForm>({
 		mode: 'onSubmit',
 	})
-	function onSubmit(data: authForm) {}
+	function onSubmit(data: authForm) {
+		fetch('/api/register',{
+			method:'POST',
+			body:JSON.stringify(data)
+		}).then(meta=>meta.json()).then(((answer:serverAnswer)=>{
+			
+		}))
+	}
 
 	const emailError = formState.errors['email']?.message
 	const usernameError = formState.errors['username']?.message

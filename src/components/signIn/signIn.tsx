@@ -3,10 +3,16 @@ import cl from '@/app/modules/authMenu/authMenu.module.scss'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 
 type authForm = {
 	email: string
 	password: string
+}
+
+type serverAnswer = {
+	isSucces: boolean,
+    text: string
 }
 
 type props = {
@@ -18,7 +24,21 @@ const SignIn: FC<props> = ({ setErrorDescription,toggle }) => {
 	const { register, handleSubmit, formState } = useForm<authForm>({
 		mode: 'onSubmit',
 	})
-	function onSubmit(data: authForm) {}
+	const router = useRouter()
+	function onSubmit(data: authForm) {
+		fetch('/api/login', {
+			method: 'POST',
+			body: JSON.stringify(data),
+		})
+			.then(meta => meta.json())
+			.then((answer : serverAnswer) => {
+				if (answer.isSucces) {
+					router.replace('/home')
+				} else {
+					setErrorDescription(answer.text)
+				}
+			})
+	}
 
 	const emailError = formState.errors['email']?.message
 	const passwordError = formState.errors['password']?.message

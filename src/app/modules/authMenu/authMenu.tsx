@@ -6,7 +6,7 @@ import ErrorMessage from '@/components/ui/errorMessage/errorMessage'
 
 const AuthMenu: FC = () => {
 	const [errorsDescription, setErrorDescription] = useState('')
-	const [isSignIn, setIsSignIn] = useState(false)
+	const [isSignIn, setIsSignIn] = useState(true)
 	function toggle(){
 		setIsSignIn(prev=>!prev)
 	}
