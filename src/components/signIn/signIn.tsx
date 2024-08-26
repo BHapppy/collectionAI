@@ -26,7 +26,7 @@ type props = {
 }
 
 const SignIn: FC<props> = ({ setErrorDescription, toggle }) => {
-	const { register, handleSubmit, formState } = useForm<authForm>({
+	const { register, handleSubmit, formState,watch } = useForm<authForm>({
 		mode: 'onSubmit',
 	})
 	const router = useRouter()
@@ -63,7 +63,7 @@ const SignIn: FC<props> = ({ setErrorDescription, toggle }) => {
 					<h1 className={cl.logotype}>Sign In</h1>
 					<div className={cl.relative_container}>
 						<Input
-							placeholder='Email'
+							id='email'
 							className={`${cl.input} ${emailError ? cl.invalid_value : ''}`}
 							{...register('email', {
 								required: 'Email field required',
@@ -73,15 +73,26 @@ const SignIn: FC<props> = ({ setErrorDescription, toggle }) => {
 								},
 							})}
 						/>
+						<label htmlFor='email' className={`${cl.label} ${watch('email') ? cl.onFocus : ''}`}>
+							Email
+						</label>
 					</div>
 					<div className={cl.relative_container}>
 						<Input
-							placeholder='Password'
+							id='password'
 							className={`${cl.input} ${passwordError ? cl.invalid_value : ''}`}
 							{...register('password', {
 								required: 'Passowrd field required',
 							})}
 						/>
+						<label
+							htmlFor='password'
+							className={`${cl.label} ${
+								watch('password') ? cl.onFocus : ''
+							}`}
+						>
+							Password
+						</label>
 					</div>
 					<div className={cl.submit_container}>
 						<Button className={cl.submit_button}>Sign In</Button>

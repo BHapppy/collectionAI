@@ -23,16 +23,14 @@ type serverAnswer = {
 
 type props = {
 	setErrorDescription: (arg: any) => void
-	toggle:()=>void
+	toggle: () => void
 }
 
-const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
-	const { register, handleSubmit, formState, watch,trigger} = useForm<registerForm>({
-		mode: 'onChange',
-		
-	})
-
-	
+const SignUp: FC<props> = ({ setErrorDescription, toggle }) => {
+	const { register, handleSubmit, formState, watch } =
+		useForm<registerForm>({
+			mode: 'onSubmit',
+		})
 
 	async function onSubmit(postOnServer: registerForm) {
 		const answer = axios.post<registerForm, serverAnswer>(
@@ -41,7 +39,6 @@ const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
 		)
 	}
 	const passwordWatch = watch('password')
-	
 
 	const emailError = formState.errors['email']?.message
 	const usernameError = formState.errors['username']?.message
@@ -49,10 +46,12 @@ const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
 	const passwordConfirmError = formState.errors['passwordConfirm']?.message
 
 	useEffect(() => {
-		setErrorDescription(Object.values(formState.errors).find((item) =>{
-			return item.message !== ''
-		})?.message)
-	}, [emailError, passwordError,passwordConfirmError,usernameError])
+		setErrorDescription(
+			Object.values(formState.errors).find(item => {
+				return item.message !== ''
+			})?.message
+		)
+	}, [emailError, passwordError, passwordConfirmError, usernameError])
 	return (
 		<>
 			<div className={cl.auth_menu}>
@@ -60,7 +59,7 @@ const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
 					<h1 className={cl.logotype}>Sign Up</h1>
 					<div className={cl.relative_container}>
 						<Input
-							placeholder='Email'
+							id='email'
 							className={`${cl.input} ${emailError ? cl.invalid_value : ''}`}
 							{...register('email', {
 								required: 'Email field required',
@@ -70,30 +69,46 @@ const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
 								},
 							})}
 						/>
+						<label
+							htmlFor='email'
+							className={`${cl.label} ${watch('email') ? cl.onFocus : ''}`}
+						>
+							Email
+						</label>
 					</div>
 					<div className={cl.relative_container}>
 						<Input
-							placeholder='Username'
-							
+							id='username'
 							className={`${cl.input} ${usernameError ? cl.invalid_value : ''}`}
 							{...register('username', {
 								required: 'Username field required',
-								
 							})}
 						/>
+						<label
+							htmlFor='username'
+							className={`${cl.label} ${watch('username') ? cl.onFocus : ''}`}
+						>
+							Username
+						</label>
 					</div>
 					<div className={cl.relative_container}>
 						<Input
-							placeholder='Password'
+							id='password'
 							className={`${cl.input} ${passwordError ? cl.invalid_value : ''}`}
 							{...register('password', {
 								required: 'Passowrd field required',
 							})}
 						/>
+						<label
+							htmlFor='password'
+							className={`${cl.label} ${watch('password') ? cl.onFocus : ''}`}
+						>
+							password
+						</label>
 					</div>
 					<div className={cl.relative_container}>
 						<Input
-							placeholder='Password Confimiration'
+							id='passwordConfirm'
 							className={`${cl.input} ${
 								passwordConfirmError ? cl.invalid_value : ''
 							}`}
@@ -104,9 +119,14 @@ const SignUp: FC<props> = ({ setErrorDescription ,toggle}) => {
 										return 'Your passwords do no match'
 									}
 								},
-								
 							})}
 						/>
+						<label
+							htmlFor='passwordConfirm'
+							className={`${cl.label} ${watch('passwordConfirm') ? cl.onFocus : ''}`}
+						>
+							Password confimiration
+						</label>
 					</div>
 					<div className={cl.submit_container}>
 						<Button className={cl.submit_button}>Enlist</Button>
