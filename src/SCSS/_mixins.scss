@@ -11,3 +11,11 @@
     align-items: center;
     flex-direction: column;
 }
+
+@mixin grid-template-center($repeat:2,$columnSize:1fr,$autoRow:1fr){
+    display: grid;
+    grid-template-columns: repeat($repeat,$columnSize);
+    grid-auto-rows:$autoRow;
+    justify-content: center;
+    align-content: center;
+}

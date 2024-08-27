@@ -1,0 +1,5 @@
+@import '@/SCSS/mixins';
+
+.grid_container{
+    @include grid-template-center(1,1fr,1fr);
+}
