@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
+import '@/SCSS/_variables.scss'
 import { Sidebar } from "@/components/sideBar/sidebar";
 
 import "./globals.css";

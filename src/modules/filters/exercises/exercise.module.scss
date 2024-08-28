@@ -1,0 +1,12 @@
+@import "./../../../SCSS/_variables.scss";
+
+.container {
+  width: 70vw;
+  height: 70vh;
+  background-color: $moduleColor;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
