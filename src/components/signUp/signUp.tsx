@@ -27,9 +27,9 @@ type props = {
 }
 
 const SignUp: FC<props> = ({ setErrorDescription, toggle }) => {
-	const { register, handleSubmit, formState, watch } =
+	const { register, handleSubmit, formState, watch, trigger } =
 		useForm<registerForm>({
-			mode: 'onSubmit',
+			mode: 'onChange',
 		})
 
 	async function onSubmit(postOnServer: registerForm) {
@@ -52,6 +52,12 @@ const SignUp: FC<props> = ({ setErrorDescription, toggle }) => {
 			})?.message
 		)
 	}, [emailError, passwordError, passwordConfirmError, usernameError])
+	
+	useEffect(() => {
+		if (watch('passwordConfirm').length) {
+			trigger('passwordConfirm')
+		}
+	}, [passwordWatch, trigger])
 	return (
 		<>
 			<div className={cl.auth_menu}>
@@ -123,7 +129,9 @@ const SignUp: FC<props> = ({ setErrorDescription, toggle }) => {
 						/>
 						<label
 							htmlFor='passwordConfirm'
-							className={`${cl.label} ${watch('passwordConfirm') ? cl.onFocus : ''}`}
+							className={`${cl.label} ${
+								watch('passwordConfirm') ? cl.onFocus : ''
+							}`}
 						>
 							Password confimiration
 						</label>
