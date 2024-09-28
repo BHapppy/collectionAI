@@ -1,7 +1,12 @@
-import React from "react";
+'use client'
+import React, { useState } from "react";
 import FiltersCard from "./filters_card/FiltersCard";
 import styles from "./filters.module.scss";
+import { FilterProps, FiltersCardProps } from "@/types/FiltersType/filtersType";
+import axios from "axios";
 const Filters: React.FC = () => {
+  const [selectedFilters, setSelectedFilters] = useState<FilterProps[]>([]);
+
   const filters = [
     {
       title: "Filter 1",
@@ -32,12 +37,34 @@ const Filters: React.FC = () => {
       option3: "Unresolved",
     },
   ];
+
+  const handleFilterChange = (filter: FilterProps, value: string) => {
+    setSelectedFilters((prevFilters) => {
+      if (value) {
+        return [...prevFilters, filter];
+      } else {
+        return prevFilters.filter((e) => e !== filter);
+      }
+    });
+  };
+
+  const handleApplyFilters = () => {
+    axios.post("api/getExercises", { filters: selectedFilters });
+  };
+
   return (
     <div className={styles.form}>
-          <h2>Filters</h2>
-          <FiltersCard filters={filters} />
-          <div className={styles.nameForm}></div>
-          <button className={styles.button}>Apply</button>
+      <h2>Filters</h2>
+      <FiltersCard filters={filters} onFilterChange={handleFilterChange} />
+      <div className={styles.nameForm}></div>
+      <button
+        className={styles.button}
+        onClick={() => {
+          handleApplyFilters();
+        }}
+      >
+        Apply
+      </button>
     </div>
   );
 };

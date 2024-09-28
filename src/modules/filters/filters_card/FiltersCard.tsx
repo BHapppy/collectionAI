@@ -10,21 +10,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface FilterProps {
-  title: string
-  placeholder: string;
-  option1: string;
-  option2: string;
-  option3: string;
-}
+import { FiltersCardProps } from "@/types/FiltersType/filtersType";
 
-interface FiltersCardProps {
-  filters: FilterProps[];
-}
-
-function FiltersCard({ filters }: FiltersCardProps) {
+function FiltersCard({ filters, onFilterChange }: FiltersCardProps) {
   return (
-    <div className="pt-5 grid gap-2">
+    <div className="pt-4 grid gap-2 outline-none">
       {filters.map((filter, index) => (
         <>
           <h2>{filter.title}</h2>
@@ -34,9 +24,24 @@ function FiltersCard({ filters }: FiltersCardProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="1">{filter.option1}</SelectItem>
-                <SelectItem value="2">{filter.option2}</SelectItem>
-                <SelectItem value="3">{filter.option3}</SelectItem>
+                <SelectItem
+                  value="1"
+                  onClick={() => onFilterChange(filter, '1')}
+                >
+                  {filter.option1}
+                </SelectItem>
+                <SelectItem
+                  value="2"
+                  onClick={() => onFilterChange(filter, '2')}
+                >
+                  {filter.option2}
+                </SelectItem>
+                <SelectItem
+                  value="3"
+                  onClick={() => onFilterChange(filter, '3')}
+                >
+                  {filter.option3}
+                </SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -45,4 +50,4 @@ function FiltersCard({ filters }: FiltersCardProps) {
     </div>
   );
 }
-export default FiltersCard
+export default FiltersCard;

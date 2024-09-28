@@ -1,14 +1,13 @@
 import React from 'react'
 import Filters from '@/modules/filters/Filters'
-import Exercise from '@/modules/filters/exercises/Exersices'
-import styles from './wrapper.module.scss'
-function Exercises() {
+import Exercises from '@/modules/filters/exercises/Exercises'
+function ExercisesPage() {
   return (
-    <div className={styles.wrapper}>
+    <div className=''>
       <Filters />
-      <Exercise />
+      <Exercises />
     </div>
   )
 }
 
-export default Exercises
+export default ExercisesPage;
